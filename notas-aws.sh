@@ -27,3 +27,73 @@ sudo npm install -g typescript
 mkdir ministryhealth-project
 cd ministryhealth-project
 cdk init app --language typescript
+
+
+#Desa - iymendozah
+Website URL  │ https://m9kc3cqf2j.execute-api.us-east-2.amazonaws.com/iymendozah/ 
+API Endpoint │ https://m9kc3cqf2j.execute-api.us-east-2.amazonaws.com/iymendozah/ 
+
+#pre
+│ Website URL  │ https://o96xhpe0r7.execute-api.eu-west-1.amazonaws.com/pre/ │
+│ API Endpoint │ https://o96xhpe0r7.execute-api.eu-west-1.amazonaws.com/pre/
+
+Add ip in WAF for all
+0.0.0.0/1
+128.0.0.0/1
+
+Politica OpenSearch para acceso a Kibana
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "es:*",
+      "Resource": "arn:aws:es:us-east-2:619388543473:domain/iymendozah-oh-moh-os/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": [
+            "0.0.0.0/1",
+            "128.0.0.0/1"
+          ]
+        }
+      }
+    }
+  ]
+}
+
+##Permisos temporales
+
+Cognito_preirlmohpoolAuth_Role
+Cognito_preirlmohpoolUnauth_Role
+
+##Example
+/ Initialize the Amazon Cognito credentials provider
+AWS.config.region = 'eu-west-1'; // Region
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: 'eu-west-1:0957cb7d-5708-4a6a-b389-7445327a4cdb',
+});
+
+
+
+#luego de configurar COgnito con OpenSearch
+# Se cambia los permisos
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::775646345069:role/Cognito_preirlmohpoolAuth_Role"
+        ]
+      },
+      "Action": [
+        "es:ESHttp*"
+      ],
+      "Resource": "arn:aws:es:eu-west-1:775646345069:domain/pre-irl-moh-os/*"
+    }
+  ]
+}
